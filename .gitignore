@@ -1,0 +1,22 @@
+# Model checkpoints (uploaded to HF instead)
+*.pt
+*.pth
+*.safetensors
+
+# Large data files
+/results/traces/
+/results/*.jsonl
+*.jsonl
+
+# Logs and cache
+/logs/
+__pycache__/
+*.pyc
+.cache/
+.venv/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp

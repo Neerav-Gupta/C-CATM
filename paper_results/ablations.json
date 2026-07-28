@@ -1,0 +1,50 @@
+{
+  "ablation_1_delta_vs_base": {
+    "name": "DeltaTrajectoryEncoder vs TrajectoryEncoder",
+    "delta": {
+      "fpr": 1.0,
+      "precision": 75.0,
+      "recall": 75.0,
+      "f1": 75.0
+    },
+    "base": {
+      "fpr": 1.0,
+      "precision": 75.0,
+      "recall": 75.0,
+      "f1": 75.0
+    },
+    "insight": "Trajectory representation method has minimal impact"
+  },
+  "ablation_2_with_vs_without_rules": {
+    "name": "Full C-CATM vs Encoder-only (no rules)",
+    "with_rules": {
+      "fpr": 1.0,
+      "precision": 75.0,
+      "recall": 75.0,
+      "f1": 75.0
+    },
+    "without_rules": {
+      "fpr": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "insight": "Constitutional rules are critical to discrimination"
+  },
+  "ablation_3_full_vs_rules_only": {
+    "name": "Full C-CATM vs Constitutional rules only",
+    "full": {
+      "fpr": 1.0,
+      "precision": 75.0,
+      "recall": 75.0,
+      "f1": 75.0
+    },
+    "rules_only": {
+      "fpr": 100.0,
+      "precision": 4.0,
+      "recall": 100.0,
+      "f1": 7.69
+    },
+    "insight": "Learned trajectory encoder reduces FPR by 99%"
+  }
+}
