@@ -22,10 +22,13 @@ Expected runtime on A100:
 from __future__ import annotations
 import argparse
 import json
+from pathlib import Path
 from typing import List
 import torch
 
 from trajectory.subspace import TrajectoryDataset, SubspaceTrainer
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 # ─── Stage 1: Activation extraction ───────────────────────────────────────────
@@ -251,7 +254,7 @@ def main():
     parser.add_argument("--layer_idx", type=int, default=20)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--traces_dir",
-                        default="/workspace/results/traces",
+                        default=str(REPO_ROOT / "results" / "traces"),
                         help="Directory containing full trace JSONL files")
     parser.add_argument("--d_model", type=int, default=3584)
     args = parser.parse_args()

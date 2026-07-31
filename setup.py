@@ -11,7 +11,7 @@ setup(
     name="ccatm",
     version="1.0.0",
     description="Cross-turn Contrastive Activation Trajectory Monitor for LLM Safety",
-    author="Your Name",
+    author="Neerav Gupta",
     license="MIT",
     packages=find_packages(),
     python_requires=">=3.10",

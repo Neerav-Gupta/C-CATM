@@ -16,6 +16,7 @@ from rich.console import Console
 from ..utils.results_logger import save_trace
 
 console = Console()
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class EvaluationHarness:
@@ -177,8 +178,8 @@ class EvaluationHarness:
         def _heartbeat():
             while not self._done:
                 try:
-                    Path("/workspace/logs").mkdir(exist_ok=True)
-                    with open("/workspace/logs/heartbeat.txt", "w") as f:
+                    (REPO_ROOT / "logs").mkdir(exist_ok=True)
+                    with open(REPO_ROOT / "logs" / "heartbeat.txt", "w") as f:
                         f.write(
                             f"alive at {datetime.now().isoformat()}\n"
                             f"completed: {completed}\n"
@@ -286,8 +287,8 @@ class EvaluationHarness:
         import shutil
         from datetime import datetime
 
-        results_dir = Path("/workspace/results")
-        backup_base = Path("/workspace/results/backups")
+        results_dir = REPO_ROOT / "results"
+        backup_base = REPO_ROOT / "results" / "backups"
         backup_base.mkdir(exist_ok=True)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -311,13 +312,13 @@ class EvaluationHarness:
 
     def _load_completed_keys(self) -> set:
         """
-        Scan existing result files under /workspace/results and build the
-        set of "{model_id}_{behavior_id}_{attack}_{monitor}" keys that have
-        already been completed, so `run_matrix` can resume without
-        re-running expensive attack/monitor cells.
+        Scan existing result files under the repo's results/ directory and
+        build the set of "{model_id}_{behavior_id}_{attack}_{monitor}" keys
+        that have already been completed, so `run_matrix` can resume
+        without re-running expensive attack/monitor cells.
         """
         keys = set()
-        results_dir = Path("/workspace/results")
+        results_dir = REPO_ROOT / "results"
         if not results_dir.exists():
             return keys
 
@@ -356,7 +357,7 @@ class EvaluationHarness:
     ) -> None:
         """Log failed cells so you know what to re-run."""
         import jsonlines
-        error_path = Path("/workspace/results/errors.jsonl")
+        error_path = REPO_ROOT / "results" / "errors.jsonl"
         with jsonlines.open(error_path, mode="a") as writer:
             writer.write({
                 "behavior_id": behavior.get("BehaviorID"),

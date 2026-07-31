@@ -22,7 +22,8 @@ from rich.text import Text
 from rich import box
 
 
-RESULTS_DIR = Path("/workspace/results")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RESULTS_DIR = REPO_ROOT / "results"
 
 
 def load_results():

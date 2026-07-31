@@ -13,11 +13,13 @@ the monitor-loading cost twice.
 import sys
 import torch
 import warnings
+from pathlib import Path
 warnings.filterwarnings("ignore")
 from dotenv import load_dotenv
 
-load_dotenv("/workspace/.env")
-sys.path.insert(0, "/workspace")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(REPO_ROOT / ".env")
+sys.path.insert(0, str(REPO_ROOT))
 
 from src.utils.model_loader import load_model, unload_model, TARGET_MODELS
 from src.utils.data_loader import load_fixed_stratified
@@ -207,7 +209,7 @@ def main():
     unload_model(llama_guard_dict)
     unload_model(harmbench_dict)
     console.print("\n[bold green]All secondary models complete![/bold green]")
-    console.print("Results saved to /workspace/results/")
+    console.print(f"Results saved to {REPO_ROOT / 'results'}/")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,3 @@
-# /workspace/src/attackers/__init__.py
 """
 Public API for the `attackers` package.
 

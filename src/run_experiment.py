@@ -16,10 +16,12 @@ Usage:
 import argparse
 import sys
 import torch
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv("/workspace/.env")
-sys.path.insert(0, "/workspace")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(REPO_ROOT / ".env")
+sys.path.insert(0, str(REPO_ROOT))
 
 from src.utils.model_loader import load_model, unload_model, TARGET_MODELS
 from src.utils.data_loader import load_harmbench
@@ -201,7 +203,7 @@ def main():
     unload_model(harmbench_dict)
 
     print(f"\n✓ Done — {len(results)} cells completed")
-    print(f"Results saved to /workspace/results/")
+    print(f"Results saved to {REPO_ROOT / 'results'}/")
 
 
 def _fit_traj_guard(traj_guard, target_dict, calibration_behaviors):

@@ -11,14 +11,15 @@ from typing import Dict
 from .data_structures import AttackTrace
 
 
-RESULTS_DIR = Path("/workspace/results")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RESULTS_DIR = REPO_ROOT / "results"
 
 
 def save_trace(trace: AttackTrace, monitor_name: str,
                behavior_id: str = None, category: str = None) -> Dict:
     """
     Append a flat summary row for one (attack trace, monitor) cell to
-    /workspace/results/{model_name}/{attack}_{monitor}.jsonl.
+    results/{model_name}/{attack}_{monitor}.jsonl under the repo root.
 
     Args:
         trace: the scored AttackTrace (harmbench_label, strongreject_score,
@@ -70,7 +71,7 @@ def load_results(path: str) -> list:
     with jsonlines.open(path) as f:
         return list(f)
     
-TRACES_DIR = Path("/workspace/results/traces")
+TRACES_DIR = REPO_ROOT / "results" / "traces"
 
 def save_full_trace(trace: AttackTrace, behavior_id: str = None,
                     category: str = None) -> None:

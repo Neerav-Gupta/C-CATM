@@ -3,7 +3,7 @@ Generate all result tables, plots, and figures for the C-CATM paper.
 Run this to regenerate all paper-ready outputs.
 
 Usage:
-    python generate_plots.py --output /workspace/paper_results/
+    python generate_plots.py --output ./paper_results/
 """
 
 import argparse
@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import jsonlines
 
+REPO_ROOT = Path(__file__).resolve().parent
+
 # Set style
 sns.set_style("whitegrid")
 plt.rcParams["figure.figsize"] = (12, 6)
@@ -23,9 +25,9 @@ plt.rcParams["font.size"] = 11
 def load_all_results():
     """Load and parse all evaluation results.
 
-    Recursively scans /workspace/results for *.jsonl eval output files
-    (skipping error/backup/raw-trace files) and groups rows by
-    (model_key, monitor).
+    Recursively scans the repo's results/ directory for *.jsonl eval
+    output files (skipping error/backup/raw-trace files) and groups rows
+    by (model_key, monitor).
 
     Returns:
         dict mapping (model_key, monitor_name) -> list of result row dicts,
@@ -34,7 +36,7 @@ def load_all_results():
     """
     results = defaultdict(list)
 
-    for f in Path("/workspace/results").rglob("*.jsonl"):
+    for f in (REPO_ROOT / "results").rglob("*.jsonl"):
         # Skip error logs, backups, and raw activation traces — only the
         # final per-example eval rows should feed the metrics below.
         if "error" in f.name or "backup" in str(f) or "traces" in str(f):
@@ -275,7 +277,7 @@ def generate_harm_category_breakdown(results, output_dir):
     Fraud, CSAM), and write category_breakdown.json.
 
     Maps each result row's "behavior" field to a category using the
-    Behavior->Category lookup in /workspace/data/stratified_100.json (falls
+    Behavior->Category lookup in the repo's data/stratified_100.json (falls
     back to "Unknown" if that file is missing or a behavior isn't found).
 
     Not currently called from main(); kept as a standalone reporting
@@ -289,7 +291,7 @@ def generate_harm_category_breakdown(results, output_dir):
     # Load behavior categories
     import json as json_module
     try:
-        with open("/workspace/data/stratified_100.json") as f:
+        with open(REPO_ROOT / "data" / "stratified_100.json") as f:
             behaviors = json_module.load(f)
             behavior_to_category = {b.get("Behavior", ""): b.get("Category", "Unknown") for b in behaviors}
     except:
@@ -438,7 +440,7 @@ def generate_latency_plot(output_dir):
 def generate_ablation_table(output_dir):
     """Generate ablation study table from saved results.
 
-    Reads /workspace/ablation_results.json (produced by
+    Reads the repo's ablation_results.json (produced by
     ablation_studies.py) — a list of per-ablation result dicts. Each dict's
     schema differs by which ablation produced it, so the branches below
     dispatch on which pair of keys is present (e.g. "delta_encoder"/
@@ -448,7 +450,7 @@ def generate_ablation_table(output_dir):
     print("Generating ablation table...")
 
     # Load ablation results
-    ablation_file = Path("/workspace/ablation_results.json")
+    ablation_file = REPO_ROOT / "ablation_results.json"
     if not ablation_file.exists():
         print("⚠️  WARNING: ablation_results.json not found")
         print("   Run: python ablation_studies.py --all")
@@ -509,7 +511,7 @@ def main():
     JSON metrics file, and plot used in the paper into --output.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=str, default="/workspace/paper_results/",
+    parser.add_argument("--output", type=str, default=str(REPO_ROOT / "paper_results"),
                        help="Output directory for plots and tables")
     args = parser.parse_args()
     

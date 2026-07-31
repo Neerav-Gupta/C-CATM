@@ -15,7 +15,8 @@ import json
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
-sys.path.insert(0, "/workspace/c_catm")
+REPO_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(REPO_ROOT / "c_catm"))
 
 from trajectory.encoder import DeltaTrajectoryEncoder
 from trajectory.subspace import SubspaceTrainer, TrajectoryDataset
@@ -46,12 +47,12 @@ def ablation_learned_encoder():
         # d_model=3584 is the hidden-state/activation dimension of the monitored
         # LLM; it must match the dimension the encoder/gate checkpoints below
         # were trained with.
-        "/workspace/c_catm/data/trajectories_val.jsonl",
+        str(REPO_ROOT / "c_catm" / "data" / "trajectories_val.jsonl"),
         d_model=3584, augment=False
     )
 
     encoder_trained = SubspaceTrainer.load_encoder(
-        "/workspace/c_catm/checkpoints/encoder_best.pt", device="cuda"
+        str(REPO_ROOT / "c_catm" / "checkpoints" / "encoder_best.pt"), device="cuda"
     ).eval()
 
     # proj_dim=256 must match the trained gate's expected input size.
@@ -59,7 +60,7 @@ def ablation_learned_encoder():
     # Keep random initialization — don't load weights
 
     concept_matrix, _ = SAEConceptExtractor.load(
-        "/workspace/c_catm/checkpoints/concepts.pt"
+        str(REPO_ROOT / "c_catm" / "checkpoints" / "concepts.pt")
     )
 
     gate = ConstitutionalGate(
@@ -67,7 +68,7 @@ def ablation_learned_encoder():
         n_rules=concept_matrix.shape[0], rule_weights=get_rule_weights()
     ).cuda().eval()
     gate.set_concept_matrix(concept_matrix, get_rule_weights())
-    gate.load_state_dict(torch.load("/workspace/c_catm/checkpoints/gate_trained.pt")["gate_state_dict"])
+    gate.load_state_dict(torch.load(str(REPO_ROOT / "c_catm" / "checkpoints" / "gate_trained.pt"))["gate_state_dict"])
 
     def score_encoder(encoder_obj, dataset, name):
         """
@@ -168,7 +169,7 @@ def main():
     ablation_* calls below to extend the study set.
     """
     parser = argparse.ArgumentParser(description="Run ablation studies for C-CATM")
-    parser.add_argument("--output", type=str, default="/workspace/ablation_results.json", help="Output file for results")
+    parser.add_argument("--output", type=str, default=str(REPO_ROOT / "ablation_results.json"), help="Output file for results")
     args = parser.parse_args()
 
     results_list = []

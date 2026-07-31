@@ -20,7 +20,8 @@ from pathlib import Path
 import jsonlines
 from collections import defaultdict
 
-trace_dir = Path("/workspace/results/traces")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+trace_dir = REPO_ROOT / "results" / "traces"
 label_counts = defaultdict(int)
 model_counts = defaultdict(int)
 attack_counts = defaultdict(int)

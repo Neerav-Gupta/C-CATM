@@ -8,13 +8,25 @@ the HarmBench CSV schema, so downstream code (attackers, scorers, the
 evaluation harness) can treat all datasets uniformly.
 """
 
+import os
 import pandas as pd
 import jsonlines
+from pathlib import Path
 from typing import List, Dict
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
-HARMBENCH_PATH = "/workspace/HarmBench/data/behavior_datasets/harmbench_behaviors_text_all.csv"
-SAFEDIAL_EN_PATH = "/workspace/SafeDialBench-Dataset/data/complete/datasets_en.jsonl"
+# HarmBench and SafeDialBench are separate upstream repos, expected to be
+# checked out as siblings of this repo (i.e. next to it, not inside it).
+# Override via env var if you've cloned them elsewhere.
+HARMBENCH_PATH = os.environ.get(
+    "HARMBENCH_PATH",
+    str(REPO_ROOT.parent / "HarmBench" / "data" / "behavior_datasets" / "harmbench_behaviors_text_all.csv"),
+)
+SAFEDIAL_EN_PATH = os.environ.get(
+    "SAFEDIAL_EN_PATH",
+    str(REPO_ROOT.parent / "SafeDialBench-Dataset" / "data" / "complete" / "datasets_en.jsonl"),
+)
 STRONGREJECT_SMALL_PATH = None  # loaded via strong_reject package directly
 
 
@@ -121,6 +133,6 @@ def load_fixed_stratified() -> List[Dict]:
     are evaluated on the exact same behavior sample for a fair comparison.
     """
     import json
-    path = "/workspace/data/stratified_100.json"
+    path = str(REPO_ROOT / "data" / "stratified_100.json")
     with open(path) as f:
         return json.load(f)

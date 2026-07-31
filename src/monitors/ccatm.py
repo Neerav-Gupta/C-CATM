@@ -10,14 +10,17 @@ catch attacks that only become apparent when turns are considered together.
 """
 import sys
 import torch
+from pathlib import Path
 from typing import Dict, Any
 from .base import BaseMonitor
 from ..utils.data_structures import AttackTrace
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 # The C-CATM monitor implementation lives in a separate package outside
 # this repo; add it to the path so `from monitor import CCATMMonitor`
 # (below) resolves without requiring it to be pip-installed.
-sys.path.insert(0, "/workspace/c_catm")
+sys.path.insert(0, str(REPO_ROOT / "c_catm"))
 
 
 class CCATMMonitorWrapper(BaseMonitor):
@@ -25,9 +28,9 @@ class CCATMMonitorWrapper(BaseMonitor):
 
     def __init__(
         self,
-        encoder_checkpoint: str = "/workspace/c_catm/checkpoints/encoder_best.pt",
-        concept_checkpoint: str = "/workspace/c_catm/checkpoints/concepts.pt",
-        gate_checkpoint: str = "/workspace/c_catm/checkpoints/gate_trained.pt",
+        encoder_checkpoint: str = str(REPO_ROOT / "c_catm" / "checkpoints" / "encoder_best.pt"),
+        concept_checkpoint: str = str(REPO_ROOT / "c_catm" / "checkpoints" / "concepts.pt"),
+        gate_checkpoint: str = str(REPO_ROOT / "c_catm" / "checkpoints" / "gate_trained.pt"),
         gate_threshold: float = 0.5,
         device: str = "cuda",
     ):
