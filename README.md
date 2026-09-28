@@ -2,8 +2,8 @@
 
 A lightweight multi-turn LLM jailbreak monitor that operates on a target model's **hidden-state trajectory** across conversation turns, rather than on its output text. C-CATM combines (1) a trajectory encoder trained with a supervised contrastive objective on turn-to-turn activation deltas, and (2) a constitutional gating layer that maps trajectory embeddings to a calibrated safety probability.
 
-**Paper:** [`paper/main.pdf`](paper/main.pdf) — *C-CATM: Cross-Turn Contrastive Activation Trajectory Monitor for Multi-Turn LLM Jailbreak Detection*, Neerav Gupta, 2026 (independent research, preprint).
-**Trained models:** [ccatm-safety-monitor on Hugging Face](https://huggingface.co/Neerav-Gupta/ccatm-safety-monitor)
+**Paper:** [`paper/main.pdf`](paper/main.pdf) <br>
+**Trained models:** [ccatm-safety-monitor](https://huggingface.co/Neerav-Gupta/ccatm-safety-monitor)  on Hugging Face
 
 ## Results
 
@@ -29,7 +29,7 @@ Evaluated against four multi-turn attacks (Crescendo, Jigsaw, Echo Chamber, Safe
 
 **Latency:** 6.2ms per trace, monitor-only inference (trajectory encoding + gate scoring; see [paper §4.4](paper/main.pdf) for what this excludes).
 
-An ablation shows the learned trajectory encoder — not the gate architecture alone — is responsible for the bulk of this performance (+22.0 F1 over a randomly initialized encoder of identical architecture). We also report, transparently, that the trained gate does not currently make use of its constitutional rule-scoring pathway (see **Limitations** below). Full tables, per-attack breakdowns, and figures are in [`paper_results/`](paper_results/) and Sections 5–6 of the paper.
+An ablation shows the learned trajectory encode (not the gate architecture alone) is responsible for the bulk of this performance (+22.0 F1 over a randomly initialized encoder of identical architecture). We also report, transparently, that the trained gate does not currently make use of its constitutional rule-scoring pathway (see **Limitations** below). Full tables, per-attack breakdowns, and figures are in [`paper_results/`](paper_results/) and Sections 5–6 of the paper.
 
 ## Repository Structure
 
@@ -38,7 +38,7 @@ c_catm/                  Standalone C-CATM monitor package (encoder, gate, const
   trajectory/            Delta trajectory encoder + contrastive training (encoder.py, subspace.py)
   constitutional/        32-rule constitution, concept extraction, gating (gate.py, extractor.py)
   train.py               Trains the trajectory encoder + gate from collected traces
-  monitor.py             CCATMMonitor — loads trained checkpoints, scores a trace
+  monitor.py             CCATMMonitor - loads trained checkpoints, scores a trace
   checkpoints/           Trained weights go here (not in git; download from Hugging Face)
 
 src/                     Evaluation harness used to produce the paper's results
@@ -60,7 +60,7 @@ generate_plots.py        Regenerates all paper tables/figures from raw eval outp
 Requires Python ≥3.10 and a CUDA GPU (results in the paper were produced on a single A100-80GB or L40-48GB).
 
 ```bash
-pip install torch==2.8.0          # install torch first — flash-attn's build needs it present
+pip install torch==2.8.0          # install torch first - flash-attn's build needs it present
 pip install -r requirements.txt   # everything else, including flash-attn
 ```
 
@@ -89,9 +89,9 @@ print(f"Flagged: {result['flagged']}")
 
 ## Reproducing the Paper's Results
 
-All scripts resolve their paths relative to the repo (via `Path(__file__)`), so they work from a clone anywhere on disk — no fixed mount point required. `run_experiment.py`/`run_secondary.py` load API keys from a `.env` file at the repo root if present. `src/utils/data_loader.py` expects [HarmBench](https://github.com/centerforaisafety/HarmBench) and SafeDialBench-Dataset checked out as sibling directories next to this repo by default; point it elsewhere via the `HARMBENCH_PATH` / `SAFEDIAL_EN_PATH` environment variables if you keep them somewhere else.
+All scripts resolve their paths relative to the repo (via `Path(__file__)`), so they work from a clone anywhere on disk. `run_experiment.py`/`run_secondary.py` load API keys from a `.env` file at the repo root if present. `src/utils/data_loader.py` expects [HarmBench](https://github.com/centerforaisafety/HarmBench) and SafeDialBench-Dataset checked out as sibling directories next to this repo by default; point it elsewhere via the `HARMBENCH_PATH` / `SAFEDIAL_EN_PATH` environment variables if you keep them somewhere else.
 
-1. **Regenerate paper tables/figures from the released raw results** (fastest path — no GPU needed):
+1. **Regenerate paper tables/figures from the released raw results** (fastest path):
    ```bash
    python generate_plots.py --output ./paper_results/
    ```
